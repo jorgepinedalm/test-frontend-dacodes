@@ -70,11 +70,13 @@ const MicroFrontendLoader: React.FC<MicroFrontendLoaderProps> = ({
   fallback = <LoadingSpinner message="Loading micro-frontend..." /> 
 }) => {
   return (
-    <ErrorBoundary>
-      <Suspense fallback={fallback}>
-        {children}
-      </Suspense>
-    </ErrorBoundary>
+    <div className="mfe-container">
+      <ErrorBoundary>
+        <Suspense fallback={fallback}>
+          {children}
+        </Suspense>
+      </ErrorBoundary>
+    </div>
   );
 };
 

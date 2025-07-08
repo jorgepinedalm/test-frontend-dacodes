@@ -49,10 +49,9 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'memoryGame',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './MemoryGameApp': './src/bootstrap',
-      },      shared: {
+      filename: 'remoteEntry.js',      exposes: {
+        './MemoryGameApp': './src/components/MemoryGameApp',
+      },shared: {
         react: {
           singleton: true,
           requiredVersion: '^18.2.0',

@@ -33,9 +33,9 @@ module.exports = {
     new ModuleFederationPlugin({
       name: 'directory',
       filename: 'remoteEntry.js',      exposes: {
-        './DirectoryApp': './src/bootstrap',
+        './DirectoryApp': './src/DirectoryApp',
         './UserTable': './src/components/UserTable'
-      },      shared: {
+      },shared: {
         react: { 
           singleton: true, 
           eager: true,

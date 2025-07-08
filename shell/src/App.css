@@ -5,7 +5,10 @@
 
 .main-content {
   min-height: calc(100vh - 70px);
-  padding: 0;
+  padding-top: 70px;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
 }
 
 .loading {
@@ -22,6 +25,17 @@
   width: 100%;
   min-height: calc(100vh - 70px);
   background: transparent;
+  overflow: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.mfe-container > * {
+  max-width: 100%;
+  position: relative;
+  z-index: 1;
+  max-height: calc(100vh - 70px);
+  overflow: auto;
 }
 
 /* Responsive design */

@@ -49,10 +49,9 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'profile',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './ProfileApp': './src/bootstrap',
-      },      shared: {
+      filename: 'remoteEntry.js',      exposes: {
+        './ProfileApp': './src/components/ProfileApp',
+      },shared: {
         react: {
           singleton: true,
           requiredVersion: '^18.2.0',
