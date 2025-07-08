@@ -159,7 +159,10 @@ export const formatGameStats = (sessions: GameSession[]) => {
  * Check if two cards match
  */
 export const cardsMatch = (card1: Card, card2: Card): boolean => {
-  return card1.value === card2.value && card1.id !== card2.id;
+  return card1.value === card2.value && 
+         card1.id !== card2.id && 
+         card1.value !== '' && 
+         card2.value !== '';
 };
 
 /**

@@ -98,8 +98,8 @@ export const useMemoryGame = (userId?: number, username?: string) => {
     setGameState(prev => {
       const card = prev.cards.find(c => c.id === cardId);
       
-      // Can't flip if card is already flipped, matched, or if 2 cards are already flipped
-      if (!card || card.isFlipped || card.isMatched || prev.flippedCards.length >= 2) {
+      // Can't flip if card is already flipped, matched, empty, or if 2 cards are already flipped
+      if (!card || card.isFlipped || card.isMatched || card.value === '' || prev.flippedCards.length >= 2) {
         return prev;
       }
 
@@ -114,9 +114,9 @@ export const useMemoryGame = (userId?: number, username?: string) => {
         const [firstCard, secondCard] = newFlippedCards;
         
         if (cardsMatch(firstCard, secondCard)) {
-          // Match found
+          // Match found - only mark the two specific cards as matched
           const matchedCards = updatedCards.map(c =>
-            c.value === firstCard.value ? { ...c, isMatched: true } : c
+            c.id === firstCard.id || c.id === secondCard.id ? { ...c, isMatched: true } : c
           );
 
           return {
