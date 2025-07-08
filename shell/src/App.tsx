@@ -30,7 +30,7 @@ const AppContent: React.FC = () => {
   return (
     <div className="app">
       <Navigation />
-      <main className="main-content">
+      <main className={`main-content ${isAuthenticated ? 'with-navbar' : ''}`}>
         <Routes>
           {/* Public Routes */}
           <Route 
