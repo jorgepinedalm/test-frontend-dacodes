@@ -7,10 +7,10 @@ import Dashboard from './pages/Dashboard';
 import './App.css';
 
 // Lazy load microfrontends
-const AuthApp = lazy(() => import('auth/App'));
-const DirectoryApp = lazy(() => import('directory/App'));
-const MemoryGameApp = lazy(() => import('memoryGame/App'));
-const ProfileApp = lazy(() => import('profile/App'));
+const AuthApp = lazy(() => import('auth/AuthApp'));
+const DirectoryApp = lazy(() => import('directory/DirectoryApp'));
+const MemoryGameApp = lazy(() => import('memoryGame/MemoryGameApp'));
+const ProfileApp = lazy(() => import('profile/ProfileApp'));
 
 // Protected Route Component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -25,7 +25,7 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
 // Main App Component
 const AppContent: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <div className="app">
@@ -48,7 +48,7 @@ const AppContent: React.FC = () => {
           
           {/* Protected Routes */}
           <Route 
-            path="/dashboard" 
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
@@ -72,7 +72,10 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 <MicroFrontendLoader>
-                  <MemoryGameApp />
+                  <MemoryGameApp 
+                    userId={user?.id} 
+                    username={user?.username} 
+                  />
                 </MicroFrontendLoader>
               </ProtectedRoute>
             } 
@@ -83,7 +86,10 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 <MicroFrontendLoader>
-                  <ProfileApp />
+                  <ProfileApp 
+                    userId={user?.id} 
+                    username={user?.username} 
+                  />
                 </MicroFrontendLoader>
               </ProtectedRoute>
             } 

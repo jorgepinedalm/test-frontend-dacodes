@@ -36,7 +36,7 @@ type AuthAction =
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
-  loading: false,
+  loading: true, // Start with loading true to check localStorage
   error: null,
 };
 
@@ -88,19 +88,54 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, initialState);
-
-  // Check for stored token on app load
+  const [state, dispatch] = useReducer(authReducer, initialState);  // Check for stored auth token from Auth MFE on app load
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      try {
-        const user = JSON.parse(storedUser);
-        dispatch({ type: 'LOGIN_SUCCESS', payload: user });
-      } catch (error) {
-        localStorage.removeItem('user');
+    const checkAuthToken = () => {
+      const authToken = localStorage.getItem('auth_token');
+      const storedUser = localStorage.getItem('user');
+      
+      if (authToken && storedUser) {
+        try {
+          const userData = JSON.parse(storedUser);
+          const user: User = {
+            id: userData.id,
+            username: userData.username,
+            email: userData.email,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            image: userData.image,
+            token: authToken
+          };
+          dispatch({ type: 'LOGIN_SUCCESS', payload: user });
+        } catch (error) {
+          localStorage.removeItem('user');
+          localStorage.removeItem('auth_token');
+          dispatch({ type: 'LOGIN_FAILURE', payload: '' });
+        }
+      } else {
+        // No auth data found, set loading to false
+        dispatch({ type: 'LOGIN_FAILURE', payload: '' });
       }
-    }
+    };
+
+    checkAuthToken();
+
+    // Poll for auth changes every 500ms to detect Auth MFE login
+    const pollInterval = setInterval(checkAuthToken, 500);
+
+    // Listen for storage changes (works for different tabs)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'auth_token' || e.key === 'user') {
+        checkAuthToken();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      clearInterval(pollInterval);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const login = async (username: string, password: string): Promise<void> => {
@@ -137,9 +172,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       });
     }
   };
-
   const logout = (): void => {
+    // Clear both shell and Auth MFE storage
     localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('refresh_token');
     dispatch({ type: 'LOGOUT' });
   };
 
