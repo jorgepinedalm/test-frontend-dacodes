@@ -1,33 +1,39 @@
 .game-grid {
   display: grid;
-  gap: 12px;
-  padding: 20px;
+  gap: 16px;
+  padding: 30px;
   max-width: 100%;
+  width: 100%;
   margin: 0 auto;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  min-height: 400px;
 }
 
 .game-grid-3 {
-  max-width: 400px;
-  gap: 16px;
+  max-width: 500px;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .game-grid-4 {
-  max-width: 500px;
-  gap: 14px;
+  max-width: 600px;
+  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .game-grid-5 {
-  max-width: 600px;
-  gap: 12px;
+  max-width: 700px;
+  gap: 16px;
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .game-grid-6 {
-  max-width: 700px;
-  gap: 10px;
+  max-width: 800px;
+  gap: 14px;
+  grid-template-columns: repeat(6, 1fr);
 }
 
 .game-complete {
@@ -49,24 +55,28 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   .game-grid {
-    padding: 15px;
-    gap: 8px;
+    padding: 20px;
+    gap: 12px;
   }
   
   .game-grid-3 {
-    max-width: 320px;
+    max-width: 400px;
+    gap: 16px;
   }
   
   .game-grid-4 {
-    max-width: 360px;
+    max-width: 450px;
+    gap: 14px;
   }
   
   .game-grid-5 {
-    max-width: 400px;
+    max-width: 500px;
+    gap: 12px;
   }
   
   .game-grid-6 {
-    max-width: 440px;
+    max-width: 550px;
+    gap: 10px;
   }
 }
 
