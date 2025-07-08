@@ -22,8 +22,8 @@ export interface LoginResponse {
   lastName: string;
   gender: string;
   image: string;
-  token: string;
-  refreshToken?: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface AuthState {

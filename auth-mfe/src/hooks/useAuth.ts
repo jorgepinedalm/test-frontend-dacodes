@@ -54,12 +54,11 @@ export const useAuth = () => {
   const login = useCallback(async (credentials: LoginCredentials): Promise<boolean> => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
 
-    try {
-      const loginResponse = await authService.login(credentials);
+    try {      const loginResponse = await authService.login(credentials);
       
       setAuthState({
         user: loginResponse,
-        token: loginResponse.token,
+        token: loginResponse.accessToken,
         isAuthenticated: true,
         isLoading: false,
         error: null,

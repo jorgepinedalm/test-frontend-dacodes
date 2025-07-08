@@ -27,13 +27,12 @@ class AuthService {
 
       if (!response.ok) {
         throw new Error('Authentication failed');
-      }
-
-      const data: LoginResponse = await response.json();
+      }      const data: LoginResponse = await response.json();
       
-      // Store token in localStorage for persistence
-      this.setToken(data.token);
+      // Store token and user data in localStorage for persistence
+      this.setToken(data.accessToken);
       this.setRefreshToken(data.refreshToken);
+      this.setUser(data);
       
       return data;
     } catch (error) {
@@ -94,12 +93,10 @@ class AuthService {
       if (!response.ok) {
         this.clearTokens();
         return null;
-      }
-
-      const data = await response.json();
-      this.setToken(data.token);
+      }      const data = await response.json();
+      this.setToken(data.accessToken);
       
-      return data.token;
+      return data.accessToken;
     } catch (error) {
       console.error('Token refresh error:', error);
       this.clearTokens();
@@ -134,10 +131,30 @@ class AuthService {
   private getRefreshToken(): string | null {
     return localStorage.getItem('refresh_token');
   }
-
   private clearTokens(): void {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('refresh_token');
+    localStorage.removeItem('user');
+  }
+
+  /**
+   * User data management methods
+   */
+  private setUser(user: LoginResponse): void {
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUser(): LoginResponse | null {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      try {
+        return JSON.parse(userData);
+      } catch (error) {
+        localStorage.removeItem('user');
+        return null;
+      }
+    }
+    return null;
   }
 
   /**

@@ -132,13 +132,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
               'Sign In'
             )}
           </button>
-        </form>
-
-        <div className="login-footer">
+        </form>        <div className="login-footer">
           <p className="demo-info">
             <strong>Demo Credentials:</strong><br/>
-            Username: <code>kminchelle</code><br/>
-            Password: <code>0lelplR</code>
+            Username: <code>emilys</code><br/>
+            Password: <code>emilyspass</code>
           </p>
         </div>
       </div>
