@@ -1,53 +1,86 @@
 # Modular People Portal
 
-A React TypeScript microfrontend application implementing a modular people portal with authentication, user directory, memory game, and profile management.
+A React TypeScript microfrontend application implementing a modular people portal with authentication, user directory, memory game, and profile management using **Module Federation**.
 
-## Architecture
+## 🚀 Quick Start
 
-This project uses **Module Federation** (Webpack 5) to implement a microfrontend architecture with the following applications:
+### Prerequisites
+- Node.js 18+
+- npm or yarn
 
-- **Shell (Port 3000)**: Main container application that orchestrates all microfrontends
-- **Auth MFE (Port 3001)**: Authentication microfrontend with JWT token management
-- **Directory MFE (Port 3002)**: User directory with pagination, search, and filtering
-- **Memory Game MFE (Port 3003)**: Configurable NxN memory matching game
-- **Profile MFE (Port 3004)**: User profile management (bonus feature)
+### Installation & Running
+```bash
+# Install all dependencies
+npm run install:all
 
-## Tech Stack
+# Start all microfrontends
+npm run start:dev
+```
 
-- **Frontend**: React 18, TypeScript
+**Application URLs:**
+- **Main App**: http://localhost:3000
+- **Auth MFE**: http://localhost:3001  
+- **Directory MFE**: http://localhost:3002
+- **Memory Game MFE**: http://localhost:3003
+- **Profile MFE**: http://localhost:3004
+
+### Test Credentials
+- **Username**: `emilys`
+- **Password**: `emilyspass`
+
+## 🏗️ Architecture
+
+This project uses **Module Federation** (Webpack 5) to implement a microfrontend architecture:
+
+| Application | Port | Description |
+|-------------|------|-------------|
+| **Shell** | 3000 | Main container orchestrating all MFEs |
+| **Auth MFE** | 3001 | JWT authentication with DummyJSON API |
+| **Directory MFE** | 3002 | User directory with search, sort, pagination |
+| **Memory Game MFE** | 3003 | Configurable NxN memory matching game |
+| **Profile MFE** | 3004 | User profile management |
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 18.2.0, TypeScript 4.9.5+
 - **Microfrontend**: Module Federation (Webpack 5)
-- **State Management**: React Context + useReducer
-- **Routing**: React Router v6
-- **Authentication**: JWT tokens
+- **State Management**: React Context + Custom Hooks
+- **Routing**: React Router v6.8.0
+- **Authentication**: JWT tokens with refresh
 - **API**: DummyJSON API (https://dummyjson.com)
-- **Testing**: Jest (Unit), Cypress (E2E)
-- **Styling**: CSS3 with CSS Grid and Flexbox
+- **Styling**: CSS3 with CSS Grid, Flexbox, and Animations
+- **Build**: Webpack 5 with ts-loader
 
-## Features
+## ✨ Features
 
-### Authentication
+### 🔐 Authentication (Auth MFE)
 - JWT-based authentication using DummyJSON API
-- Token refresh handling
-- Protected routes
-- Session management
+- Automatic token refresh handling
+- Protected routes with redirect
+- Persistent session management
+- Responsive login form with validation
 
-### User Directory
-- Paginated user list with infinite scrolling
-- Client-side sorting by multiple columns
-- Server-side search functionality
-- Local storage caching for performance
-- Responsive design
+### 📁 User Directory (Directory MFE)
+- Paginated user list from DummyJSON API
+- **Search**: Real-time search with history
+- **Sorting**: Multi-column sorting (name, email, company, city)
+- **Pagination**: Configurable page sizes (10, 20, 50, 100)
+- Client-side caching for performance
+- Fully responsive table design
 
-### Memory Game
-- Configurable grid sizes (3x3, 4x4, 5x5, etc.)
-- Turn counter and timer
-- Game state persistence
-- Leaderboard integration
-- Responsive card layout
+### 🎮 Memory Game (Memory Game MFE)
+- **Configurable Grids**: 3x3, 4x4, 5x5, 6x6 options
+- **Game Mechanics**: Card flipping, matching, completion detection
+- **Scoring System**: Turn-based scoring with time tracking
+- **Leaderboard**: Persistent leaderboard with sorting/filtering
+- **State Persistence**: Game state saved across sessions
+- CSS animations for card interactions
 
-### Profile Management
-- User profile viewing
-- Detailed user information display
+### 👤 Profile Management (Profile MFE)
+- Display authenticated user information
+- Edit mode with form validation
+- Profile data persistence
+- Responsive profile layout
 
 ### Leaderboard
 - Top 10 players ranking
