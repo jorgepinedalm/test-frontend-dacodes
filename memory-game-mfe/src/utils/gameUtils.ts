@@ -31,8 +31,11 @@ export const generateCards = (config: GameConfig): Card[] => {
   const totalCards = config.gridSize * config.gridSize;
   const pairCount = Math.floor(totalCards / 2);
   
-  if (totalCards % 2 !== 0) {
-    throw new Error('Grid size must result in an even number of cards');
+  // For odd number of cards, we'll use one less card to make pairs
+  const cardsToUse = pairCount * 2;
+  
+  if (pairCount === 0) {
+    throw new Error('Grid size too small to create pairs');
   }
 
   const symbols = generateCardSymbols(pairCount);
@@ -58,6 +61,17 @@ export const generateCards = (config: GameConfig): Card[] => {
       position: index * 2 + 1
     });
   });
+
+  // Add empty cards if we need to fill the grid (for odd-sized grids)
+  while (cards.length < totalCards) {
+    cards.push({
+      id: `empty-${cards.length}`,
+      value: '',
+      isFlipped: false,
+      isMatched: true, // Empty cards are always "matched" (disabled)
+      position: cards.length
+    });
+  }
 
   // Shuffle the cards
   return shuffleArray(cards).map((card, index) => ({
@@ -166,7 +180,7 @@ export const generateSessionId = (): string => {
  * Validate grid size
  */
 export const isValidGridSize = (size: number): boolean => {
-  return size >= 2 && size <= 8 && (size * size) % 2 === 0;
+  return size >= 2 && size <= 8 && Math.floor((size * size) / 2) >= 1;
 };
 
 /**

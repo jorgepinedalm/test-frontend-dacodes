@@ -176,3 +176,21 @@
     animation: none;
   }
 }
+
+/* Empty cards for odd grids */
+.game-card.empty {
+  opacity: 0;
+  pointer-events: none;
+  cursor: default;
+}
+
+.game-card.empty:hover {
+  transform: none;
+}
+
+.game-card.empty .card-front,
+.game-card.empty .card-back {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}

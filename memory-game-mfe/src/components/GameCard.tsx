@@ -10,10 +10,22 @@ interface GameCardProps {
 
 const GameCard: React.FC<GameCardProps> = ({ card, onFlip, disabled }) => {
   const handleClick = () => {
-    if (!disabled && !card.isFlipped && !card.isMatched) {
+    if (!disabled && !card.isFlipped && !card.isMatched && card.value !== '') {
       onFlip(card.id);
     }
   };
+
+  // Empty cards (for odd grids) should be invisible/disabled
+  if (card.value === '') {
+    return (
+      <div className="game-card empty matched">
+        <div className="card-inner">
+          <div className="card-front"></div>
+          <div className="card-back"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

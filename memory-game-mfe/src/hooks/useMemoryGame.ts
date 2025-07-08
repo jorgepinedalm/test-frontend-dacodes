@@ -71,7 +71,9 @@ export const useMemoryGame = (userId?: number, username?: string) => {
 
   const startNewGame = useCallback((config: GameConfig) => {
     const cards = generateCards(config);
-    const totalPairs = Math.floor(cards.length / 2);
+    // Count only non-empty cards and divide by 2 for pairs
+    const nonEmptyCards = cards.filter(card => card.value !== '');
+    const totalPairs = Math.floor(nonEmptyCards.length / 2);
 
     setGameState({
       cards,
