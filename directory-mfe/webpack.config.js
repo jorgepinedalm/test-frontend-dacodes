@@ -32,15 +32,25 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'directory',
-      filename: 'remoteEntry.js',
-      exposes: {
-        './DirectoryApp': './src/DirectoryApp',
+      filename: 'remoteEntry.js',      exposes: {
+        './DirectoryApp': './src/bootstrap',
         './UserTable': './src/components/UserTable'
-      },
-      shared: {
-        react: { singleton: true, eager: true },
-        'react-dom': { singleton: true, eager: true },
-        'react-router-dom': { singleton: true, eager: true }
+      },      shared: {
+        react: { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: '^18.2.0'
+        },
+        'react-dom': { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: '^18.2.0'
+        },
+        'react-router-dom': { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: '^6.8.0'
+        }
       }
     }),
     new HtmlWebpackPlugin({

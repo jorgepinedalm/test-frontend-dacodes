@@ -37,11 +37,22 @@ module.exports = {
         directory: 'directory@http://localhost:3002/remoteEntry.js',
         memoryGame: 'memoryGame@http://localhost:3003/remoteEntry.js',
         profile: 'profile@http://localhost:3004/remoteEntry.js'
-      },
-      shared: {
-        react: { singleton: true, eager: true },
-        'react-dom': { singleton: true, eager: true },
-        'react-router-dom': { singleton: true, eager: true }
+      },      shared: {
+        react: { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: '^18.2.0'
+        },
+        'react-dom': { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: '^18.2.0'
+        },
+        'react-router-dom': { 
+          singleton: true, 
+          eager: true,
+          requiredVersion: '^6.8.0'
+        }
       }
     }),
     new HtmlWebpackPlugin({
