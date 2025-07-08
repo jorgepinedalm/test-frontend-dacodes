@@ -92,11 +92,10 @@ class DirectoryService {
       throw new Error('Failed to fetch user');
     }
   }
-
   /**
    * Client-side sorting of users
    */
-  sortUsers(users: User[], sortBy: string, sortOrder: 'asc' | 'desc'): User[] {
+  sortUsers(users: User[], sortBy: keyof User | 'company.name' | 'address.city', sortOrder: 'asc' | 'desc'): User[] {
     return [...users].sort((a, b) => {
       let aValue: any;
       let bValue: any;
@@ -104,8 +103,8 @@ class DirectoryService {
       // Handle nested properties
       if (sortBy.includes('.')) {
         const keys = sortBy.split('.');
-        aValue = keys.reduce((obj, key) => obj?.[key], a);
-        bValue = keys.reduce((obj, key) => obj?.[key], b);
+        aValue = keys.reduce((obj, key) => obj?.[key], a as any);
+        bValue = keys.reduce((obj, key) => obj?.[key], b as any);
       } else {
         aValue = a[sortBy as keyof User];
         bValue = b[sortBy as keyof User];

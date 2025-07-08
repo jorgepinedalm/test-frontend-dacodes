@@ -133,8 +133,7 @@ export const useDirectory = () => {
       }));
     }
   }, [state.filters, state.searchHistory]);
-
-  const sort = useCallback((sortBy: string, sortOrder: 'asc' | 'desc') => {
+  const sort = useCallback((sortBy: keyof User | 'company.name' | 'address.city', sortOrder: 'asc' | 'desc') => {
     setState(prev => {
       const newFilters = { ...prev.filters, sortBy, sortOrder };
       const sortedUsers = directoryService.sortUsers(prev.users, sortBy, sortOrder);
