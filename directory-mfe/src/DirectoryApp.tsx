@@ -1,9 +1,9 @@
 import React from 'react';
 import { useDirectory } from './hooks/useDirectory';
 import SearchBar from './components/SearchBar';
+import './DirectoryApp.css';
 import UserTable from './components/UserTable';
 import Pagination from './components/Pagination';
-import './DirectoryApp.css';
 
 const DirectoryApp: React.FC = () => {
   const {
