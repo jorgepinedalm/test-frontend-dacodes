@@ -1,0 +1,124 @@
+.game-grid {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+  max-width: 100%;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.game-grid-3 {
+  max-width: 400px;
+  gap: 16px;
+}
+
+.game-grid-4 {
+  max-width: 500px;
+  gap: 14px;
+}
+
+.game-grid-5 {
+  max-width: 600px;
+  gap: 12px;
+}
+
+.game-grid-6 {
+  max-width: 700px;
+  gap: 10px;
+}
+
+.game-complete {
+  animation: celebrateGrid 1s ease-in-out;
+}
+
+@keyframes celebrateGrid {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .game-grid {
+    padding: 15px;
+    gap: 8px;
+  }
+  
+  .game-grid-3 {
+    max-width: 320px;
+  }
+  
+  .game-grid-4 {
+    max-width: 360px;
+  }
+  
+  .game-grid-5 {
+    max-width: 400px;
+  }
+  
+  .game-grid-6 {
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-grid {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .game-grid-3 {
+    max-width: 280px;
+  }
+  
+  .game-grid-4 {
+    max-width: 300px;
+  }
+  
+  .game-grid-5 {
+    max-width: 320px;
+  }
+  
+  .game-grid-6 {
+    max-width: 340px;
+  }
+}
+
+/* Tablet landscape */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .game-grid {
+    max-height: 70vh;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .game-complete {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .game-grid {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid #ffffff;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .game-grid {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+}
