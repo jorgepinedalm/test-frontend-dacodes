@@ -54,62 +54,74 @@ This project uses **Module Federation** (Webpack 5) to implement a microfrontend
 - Performance metrics tracking
 - Real-time updates (bonus)
 
-## Getting Started
+## Current Status
+
+✅ **Completed Components:**
+- Shell application with Module Federation setup
+- Auth MFE with JWT authentication and DummyJSON integration
+- Directory MFE core structure with search and API services
+- Project structure and build configuration
+- Installation and development scripts
+
+🚧 **In Progress:**
+- Directory MFE user table and pagination components
+- Memory Game MFE implementation
+- Profile MFE (bonus feature)
+
+## Quick Start
 
 ### Prerequisites
 - Node.js 16+ 
 - npm or yarn
 
-### Installation
+### Installation and Setup
 
-1. Clone the repository:
-\`\`\`bash
-git clone <repository-url>
-cd modular-people-portal
-\`\`\`
+**Option 1: Automated Setup (Recommended)**
+```bash
+# Windows (PowerShell)
+npm run setup
 
-2. Install dependencies for all applications:
-\`\`\`bash
-# Install shell dependencies
-cd shell && npm install
+# Linux/Mac
+npm run setup:unix
+```
 
-# Install auth MFE dependencies  
-cd ../auth-mfe && npm install
-
-# Install directory MFE dependencies
-cd ../directory-mfe && npm install
-
-# Install memory game MFE dependencies
-cd ../memory-game-mfe && npm install
-
-# Install profile MFE dependencies
-cd ../profile-mfe && npm install
-\`\`\`
+**Option 2: Manual Setup**
+```bash
+# Install dependencies for all microfrontends
+npm run install:all
+```
 
 ### Development
 
-To run all applications in development mode:
+**Start all applications for development:**
+```bash
+# This will start all MFEs concurrently on different ports
+npm run start:dev
+```
 
-1. Start each microfrontend in separate terminals:
+**Or start individually:**
+```bash
+# Terminal 1 - Auth MFE (Port 3001)
+npm run start:auth
 
-\`\`\`bash
-# Terminal 1 - Auth MFE
-cd auth-mfe && npm start
+# Terminal 2 - Directory MFE (Port 3002)  
+npm run start:directory
 
-# Terminal 2 - Directory MFE  
-cd directory-mfe && npm start
+# Terminal 3 - Memory Game MFE (Port 3003)
+npm run start:game
 
-# Terminal 3 - Memory Game MFE
-cd memory-game-mfe && npm start
+# Terminal 4 - Shell (Port 3000) - Start this last
+npm run start:shell
+```
 
-# Terminal 4 - Profile MFE
-cd profile-mfe && npm start
+### Access the Application
 
-# Terminal 5 - Shell (Main App)
-cd shell && npm start
-\`\`\`
+1. Open http://localhost:3000 in your browser
+2. Use demo credentials:
+   - **Username:** `kminchelle`
+   - **Password:** `0lelplR`
 
-2. Open http://localhost:3000 to view the application
+## Architecture Overview
 
 ### Testing
 
