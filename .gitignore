@@ -43,3 +43,6 @@ temp/
 
 # Module Federation cache
 .webpack_cache/
+
+# files
+*.pdf
