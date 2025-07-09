@@ -41,11 +41,3 @@
   z-index: 1;
   overflow: auto;
 }
-
-/* Responsive design */
-@media (max-width: 768px) {
-  .main-content.with-navbar {
-    min-height: calc(100vh - 220px);
-    padding-top: 220px;
-  }
-}
