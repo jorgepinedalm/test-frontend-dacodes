@@ -57,6 +57,7 @@ const MemoryGameApp: React.FC<MemoryGameAppProps> = ({ userId, username }) => {
             onResetGame={resetGame}
             onPauseGame={pauseGame}
             onResumeGame={resumeGame}
+            onViewLeaderboard={() => setShowLeaderboard(true)}
             remainingTime={remainingTime}
           />
 

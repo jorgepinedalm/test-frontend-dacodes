@@ -137,6 +137,16 @@
   color: white;
 }
 
+.btn-info {
+  background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+  color: white;
+  grid-column: span 2 / span 2;
+}
+
+.btn-info:hover {
+  background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+}
+
 .game-settings {
   background: rgba(248, 249, 250, 0.9);
   border-radius: 12px;
@@ -395,15 +405,12 @@ body > .modal-overlay {
 }
 
 .modal-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
+  display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 8px;
 }
 
-.modal-actions .btn {
-  min-width: 120px;
-}
 
 /* Animation keyframes */
 @keyframes modalFadeIn {
@@ -480,13 +487,15 @@ body > .modal-overlay {
   .modal-body p {
     font-size: 1rem;
   }
-
   .modal-actions {
     flex-direction: column;
+    gap: 8px;
   }
 
   .modal-actions .btn {
     width: 100%;
+    min-width: auto;
+    max-width: none;
   }
 }
 

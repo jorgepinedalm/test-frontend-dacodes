@@ -16,6 +16,7 @@ interface GameControlsProps {
   onResetGame: () => void;
   onPauseGame: () => void;
   onResumeGame: () => void;
+  onViewLeaderboard?: () => void;
   remainingTime: number | null;
 }
 
@@ -29,6 +30,7 @@ interface ResultModalProps {
   onClose: () => void;
   onShowSettings: () => void;
   onStartGame: () => void;
+  onViewLeaderboard?: () => void;
 }
 
 const ResultModal: React.FC<ResultModalProps> = React.memo(({
@@ -39,7 +41,8 @@ const ResultModal: React.FC<ResultModalProps> = React.memo(({
   score,
   onClose,
   onShowSettings,
-  onStartGame
+  onStartGame,
+  onViewLeaderboard
 }) => {
   // Early return to prevent unnecessary rendering
   if (!isVisible) {
@@ -91,20 +94,27 @@ const ResultModal: React.FC<ResultModalProps> = React.memo(({
             </>
           )}
         </div>
-        
-        <div className="modal-actions">
+          <div className="modal-actions">
           <button
             className="btn btn-primary"
             onClick={onShowSettings}
           >
             Game Settings
-          </button>
+          </button>          
           <button
             className="btn btn-success"
             onClick={onStartGame}
           >
             Play Again
           </button>
+          {onViewLeaderboard && (
+            <button
+              className="btn btn-info"
+              onClick={onViewLeaderboard}
+            >
+              🏆 Show Leaderboard
+            </button>
+          )}
         </div>
       </div>
     </div>,
@@ -118,8 +128,10 @@ const GameControls: React.FC<GameControlsProps> = ({
   onStartNewGame,
   onResetGame,
   onPauseGame,
-  onResumeGame,  remainingTime
-}) => {  const [selectedConfig, setSelectedConfig] = React.useState<GameConfig>(DEFAULT_CONFIGS.medium);
+  onResumeGame,
+  onViewLeaderboard,
+  remainingTime
+}) => {const [selectedConfig, setSelectedConfig] = React.useState<GameConfig>(DEFAULT_CONFIGS.medium);
   const [showSettings, setShowSettings] = React.useState(false);
   const [showResultModal, setShowResultModal] = React.useState(false);  // Show modal when game is completed or failed with small delay to prevent flickering
   React.useEffect(() => {
@@ -187,7 +199,6 @@ const GameControls: React.FC<GameControlsProps> = ({
   }, []);
 
   const difficultyLevel = getDifficultyLevel(gameState.config.gridSize);
-
   // Memoized handlers to prevent unnecessary re-renders
   const handleShowSettings = React.useCallback(() => {
     setShowSettings(!showSettings);
@@ -199,6 +210,13 @@ const GameControls: React.FC<GameControlsProps> = ({
     setShowSettings(false);
     setShowResultModal(false);
   }, [selectedConfig, onStartNewGame]);
+
+  const handleViewLeaderboard = React.useCallback(() => {
+    setShowResultModal(false);
+    if (onViewLeaderboard) {
+      onViewLeaderboard();
+    }
+  }, [onViewLeaderboard]);
 
   return (
     <div className="game-controls">
@@ -365,9 +383,7 @@ const GameControls: React.FC<GameControlsProps> = ({
               ))}
             </div>
           </div>
-        </div>      )}
-
-      <ResultModal 
+        </div>      )}      <ResultModal 
         isVisible={showResultModal}
         gameStatus={gameStatus}
         difficultyLevel={difficultyLevel}
@@ -376,6 +392,7 @@ const GameControls: React.FC<GameControlsProps> = ({
         onClose={handleCloseModal}
         onShowSettings={handleShowSettings}
         onStartGame={handleStartGameFromModal}
+        onViewLeaderboard={handleViewLeaderboard}
       />
     </div>
   );
