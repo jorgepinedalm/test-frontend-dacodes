@@ -415,11 +415,11 @@ describe('GameService', () => {
 
       // Assert
       expect(stats.totalGames).toBe(2);
-      expect(stats.avgTime).toBe(53); // (60 + 45) / 2 = 52.5, rounded to 53
-      expect(stats.avgTurns).toBe(9); // (10 + 8) / 2 = 9
+      expect(stats.averageTime).toBe(53); // (60 + 45) / 2 = 52.5, rounded to 53
+      expect(stats.averageTurns).toBe(9); // (10 + 8) / 2 = 9
       expect(stats.bestTime).toBe(45);
       expect(stats.bestTurns).toBe(8);
-      expect(stats.bestScore).toBe(90);
+      expect(stats.winRate).toBe(90);
     });
 
     it('should return default stats for user with no sessions', () => {
