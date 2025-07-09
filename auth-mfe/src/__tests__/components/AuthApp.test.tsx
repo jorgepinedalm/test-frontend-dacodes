@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, screen } from '@testing-library/react';
 import AuthApp from '../../AuthApp';
 import { useAuth } from '../../hooks/useAuth';
 
 // Mock useAuth hook
-jest.mock('../hooks/useAuth');
+jest.mock('../../hooks/useAuth');
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
 
 // Mock LoginForm component
-jest.mock('../components/LoginForm', () => {
+jest.mock('../../components/LoginForm', () => {
   return function MockLoginForm(props: any) {
     return (
       <div data-testid="login-form">

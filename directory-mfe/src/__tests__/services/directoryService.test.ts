@@ -399,11 +399,11 @@ describe('DirectoryService', () => {
     it('should handle JSON parsing errors', async () => {
       // Arrange
       mockFetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => {
-          throw new Error('Invalid JSON');
-        }
-      } as Response);
+          ok: true,
+          json: async () => {
+              throw new Error('Invalid JSON');
+          }
+      } as unknown as Response);
 
       // Act & Assert
       await expect(directoryService.getUsers()).rejects.toThrow('Invalid JSON');

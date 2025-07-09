@@ -1,19 +1,29 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import { useAuth } from '../../hooks/useAuth';
 import AuthService from '../../services/authService';
-import { LoginCredentials, User } from '../../types/auth';
+import { LoginCredentials, LoginResponse, User } from '../../types/auth';
+import { act } from 'react';
+
+// Required fix for useAuth.test.ts
+jest.mock('../../services/authService', () => {
+  return {
+    __esModule: true,
+    default: {
+      getInstance: jest.fn()
+    }
+  };
+});
 
 // Mock AuthService
-jest.mock('../../services/authService');
 const MockedAuthService = AuthService as jest.MockedClass<typeof AuthService>;
 
 describe('useAuth', () => {
   let mockAuthService: jest.Mocked<AuthService>;
-
+  
   beforeEach(() => {
     jest.clearAllMocks();
     
-    // Setup mock instance
+    // Create mock instance
     mockAuthService = {
       getToken: jest.fn(),
       isValidToken: jest.fn(),
@@ -27,16 +37,30 @@ describe('useAuth', () => {
       setUser: jest.fn(),
     } as any;
 
-    MockedAuthService.getInstance.mockReturnValue(mockAuthService);
-  });
+    // Mock the getInstance method to return our mock
+    MockedAuthService.getInstance = jest.fn(() => mockAuthService);
 
+    // Set default mock behaviors for initialization
+    mockAuthService.getToken.mockReturnValue(null);
+    mockAuthService.isValidToken.mockReturnValue(false);
+    mockAuthService.getCurrentUser.mockResolvedValue(null);
+
+    // Mock the getInstance method to return our mock
+    (AuthService.getInstance as jest.Mock).mockReturnValue(mockAuthService);
+  });
   describe('initialization', () => {
-    it('should initialize with loading state', () => {
+    it('should initialize with loading state', async () => {
       // Arrange & Act
       const { result } = renderHook(() => useAuth());
 
-      // Assert
+      // Assert - initially loading
       expect(result.current.authState.isLoading).toBe(true);
+      
+      // Wait for initialization to complete
+      await waitFor(() => {
+        expect(result.current.authState.isLoading).toBe(false);
+      });
+
       expect(result.current.authState.isAuthenticated).toBe(false);
       expect(result.current.authState.user).toBeNull();
       expect(result.current.authState.token).toBeNull();
@@ -51,7 +75,9 @@ describe('useAuth', () => {
         username: 'testuser',
         email: 'test@example.com',
         firstName: 'Test',
-        lastName: 'User'
+        lastName: 'User',
+        gender: "Male",
+        image: "/dummy/image.jpg"
       };
 
       mockAuthService.getToken.mockReturnValue(mockToken);
@@ -125,7 +151,9 @@ describe('useAuth', () => {
         firstName: 'Test',
         lastName: 'User',
         accessToken: 'new-token',
-        refreshToken: 'new-refresh-token'
+        refreshToken: 'new-refresh-token',
+        gender: "Male",
+        image: "/dummy/image.jpg"
       };
 
       mockAuthService.getToken.mockReturnValue(null);
@@ -138,7 +166,7 @@ describe('useAuth', () => {
         expect(result.current.authState.isLoading).toBe(false);
       });
 
-      let loginResult: boolean;
+      let loginResult: boolean = false;
       await act(async () => {
         loginResult = await result.current.login(credentials);
       });
@@ -170,7 +198,7 @@ describe('useAuth', () => {
         expect(result.current.authState.isLoading).toBe(false);
       });
 
-      let loginResult: boolean;
+      let loginResult: boolean = false;
       await act(async () => {
         loginResult = await result.current.login(credentials);
       });
@@ -195,7 +223,7 @@ describe('useAuth', () => {
       let resolveLogin: (value: any) => void;
       const loginPromise = new Promise(resolve => {
         resolveLogin = resolve;
-      });
+      }) as Promise<LoginResponse>;
       mockAuthService.login.mockReturnValue(loginPromise);
 
       // Act
@@ -257,7 +285,7 @@ describe('useAuth', () => {
       const { result } = renderHook(() => useAuth());
 
       // Act
-      let refreshResult: boolean;
+      let refreshResult: boolean = false;
       await act(async () => {
         refreshResult = await result.current.refreshToken();
       });
@@ -275,7 +303,7 @@ describe('useAuth', () => {
       const { result } = renderHook(() => useAuth());
 
       // Act
-      let refreshResult: boolean;
+      let refreshResult: boolean = false;
       await act(async () => {
         refreshResult = await result.current.refreshToken();
       });

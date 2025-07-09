@@ -1,5 +1,5 @@
 // Tests for DirectoryApp component
-import React from 'react';
+import React, { act } from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import DirectoryApp from '../../DirectoryApp';
 import { useDirectory } from '../../hooks/useDirectory';
@@ -118,25 +118,22 @@ describe('DirectoryApp', () => {
       expect(screen.getByTestId('search-bar')).toBeInTheDocument();
       expect(screen.getByTestId('user-table')).toBeInTheDocument();
       expect(screen.getByTestId('pagination')).toBeInTheDocument();
-    });
-
-    it('should render refresh button', () => {
+    });    it('should render refresh button', () => {
       // Act
       render(<DirectoryApp />);
 
       // Assert
-      const refreshButton = screen.getByText('Refresh');
+      const refreshButton = screen.getByText('🔄 Refresh');
       expect(refreshButton).toBeInTheDocument();
       expect(refreshButton).toHaveClass('refresh-button');
-    });
-
-    it('should render page size selector', () => {
+    });    it('should render page size selector', () => {
       // Act
       render(<DirectoryApp />);
 
       // Assert
-      const pageSize = screen.getByDisplayValue('20');
+      const pageSize = screen.getByRole('combobox');
       expect(pageSize).toBeInTheDocument();
+      expect(pageSize).toHaveClass('page-size-select');
     });
   });
 
@@ -175,12 +172,10 @@ describe('DirectoryApp', () => {
 
       // Assert
       expect(mockDirectoryReturn.refresh).toHaveBeenCalled();
-    });
-
-    it('should call changePageSize when page size changes', () => {
+    });    it('should call changePageSize when page size changes', () => {
       // Arrange
       render(<DirectoryApp />);
-      const pageSizeSelect = screen.getByDisplayValue('20');
+      const pageSizeSelect = screen.getByRole('combobox');
 
       // Act
       fireEvent.change(pageSizeSelect, { target: { value: '50' } });
@@ -323,14 +318,52 @@ describe('DirectoryApp', () => {
           firstName: 'John',
           lastName: 'Doe',
           email: 'john@example.com',
-          phone: '123-456-7890'
+          phone: '123-456-7890',
+          username: 'johndoe',
+          website: 'https://johndoe.com',
+          image: 'https://example.com/johndoe.jpg',
+          age: 30,
+          gender: 'male',
+          address: {
+            address: '123 Main St',
+            city: 'Anytown',
+            postalCode: '12345',
+            state: 'CA',
+            country: 'USA'
+          },
+          company: {
+            name: 'Example Inc.',
+            title: 'Engineer',
+            department: 'Engineering'
+          },
+          birthDate: '1993-01-01',
+          bank: { cardNumber: '1234-5678-9012-3456', cardType: 'Visa', currency: 'USD', iban: 'US12345678901234567890', cardExpire: '12/25' }
         },
         {
           id: 2,
           firstName: 'Jane',
           lastName: 'Smith',
           email: 'jane@example.com',
-          phone: '098-765-4321'
+          phone: '098-765-4321',
+          username: 'janesmith',
+          website: 'https://janesmith.com',
+          image: 'https://example.com/janesmith.jpg',
+          age: 28,
+          gender: 'female',
+          address: {
+            address: '456 Elm St',
+            city: 'Othertown',
+            postalCode: '67890',
+            state: 'NY',
+            country: 'USA'
+          },
+          company: {
+            name: 'Example LLC',
+            title: 'Marketing Specialist',
+            department: 'Marketing'
+          },
+          birthDate: '1995-05-15',
+          bank: { cardNumber: '9876-5432-1098-7654', cardType: 'MasterCard', currency: 'USD', iban: 'US09876543210987654321', cardExpire: '11/26' }
         }
       ];
 
@@ -409,7 +442,60 @@ describe('DirectoryApp', () => {
 
     it('should pass correct props to UserTable', () => {
       // Arrange
-      const users = [{ id: 1, firstName: 'John', lastName: 'Doe' }];
+      const users = [
+        {
+          id: 1,
+          firstName: 'John',
+          lastName: 'Doe',
+          email: 'john@example.com',
+          phone: '123-456-7890',
+          username: 'johndoe',
+          website: 'https://johndoe.com',
+          image: 'https://example.com/johndoe.jpg',
+          age: 30,
+          gender: 'male',
+          address: {
+            address: '123 Main St',
+            city: 'Anytown',
+            postalCode: '12345',
+            state: 'CA',
+            country: 'USA'
+          },
+          company: {
+            name: 'Example Inc.',
+            title: 'Engineer',
+            department: 'Engineering'
+          },
+          birthDate: '1993-01-01',
+          bank: { cardNumber: '1234-5678-9012-3456', cardType: 'Visa', currency: 'USD', iban: 'US12345678901234567890', cardExpire: '12/25' }
+        },
+        {
+          id: 2,
+          firstName: 'Jane',
+          lastName: 'Smith',
+          email: 'jane@example.com',
+          phone: '098-765-4321',
+          username: 'janesmith',
+          website: 'https://janesmith.com',
+          image: 'https://example.com/janesmith.jpg',
+          age: 28,
+          gender: 'female',
+          address: {
+            address: '456 Elm St',
+            city: 'Othertown',
+            postalCode: '67890',
+            state: 'NY',
+            country: 'USA'
+          },
+          company: {
+            name: 'Example LLC',
+            title: 'Marketing Specialist',
+            department: 'Marketing'
+          },
+          birthDate: '1995-05-15',
+          bank: { cardNumber: '9876-5432-1098-7654', cardType: 'MasterCard', currency: 'USD', iban: 'US09876543210987654321', cardExpire: '11/26' }
+        }
+      ];
       mockUseDirectory.mockReturnValue({
         ...mockDirectoryReturn,
         users,
@@ -482,26 +568,20 @@ describe('DirectoryApp', () => {
       // Assert
       const heading = screen.getByRole('heading', { level: 1 });
       expect(heading).toHaveTextContent('User Directory');
-    });
-
-    it('should have accessible form controls', () => {
+    });    it('should have accessible form controls', () => {
       // Act
       render(<DirectoryApp />);
 
       // Assert
-      const pageSizeSelect = screen.getByDisplayValue('20');
-      expect(pageSizeSelect).toHaveAttribute('id', 'page-size');
-      
-      const label = screen.getByText('Page Size:');
-      expect(label).toHaveAttribute('for', 'page-size');
-    });
-
-    it('should have proper button roles', () => {
+      const pageSizeSelect = screen.getByRole('combobox');
+      expect(pageSizeSelect).toBeInTheDocument();
+      expect(pageSizeSelect).toHaveClass('page-size-select');
+    });it('should have proper button roles', () => {
       // Act
       render(<DirectoryApp />);
 
       // Assert
-      const refreshButton = screen.getByRole('button', { name: 'Refresh' });
+      const refreshButton = screen.getByRole('button', { name: '🔄 Refresh' });
       expect(refreshButton).toBeInTheDocument();
     });
   });

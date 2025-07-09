@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { act } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -22,38 +22,68 @@ jest.mock('../../utils/formatting', () => ({
 
 const mockUsers: User[] = [
   {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    username: 'johndoe',
-    email: 'john.doe@example.com',
-    age: 30,
-    gender: 'male',
-    image: 'https://example.com/avatar1.jpg',
-    company: {
-      name: 'Acme Corp',
-      title: 'Software Engineer'
-    },
-    address: {
-      city: 'New York'
-    }
+      id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      username: 'johndoe',
+      email: 'john.doe@example.com',
+      age: 30,
+      gender: 'male',
+      image: 'https://example.com/avatar1.jpg',
+      company: {
+          name: 'Acme Corp',
+          title: 'Software Engineer',
+          department: ''
+      },
+      address: {
+          city: 'New York',
+          address: '',
+          postalCode: '',
+          state: '',
+          country: ''
+      },
+      phone: '',
+      website: '',
+      birthDate: '',
+      bank: {
+          cardExpire: '',
+          cardNumber: '',
+          cardType: '',
+          currency: '',
+          iban: ''
+      }
   },
   {
-    id: 2,
-    firstName: 'Jane',
-    lastName: 'Smith',
-    username: 'janesmith',
-    email: 'jane.smith@company.com',
-    age: 28,
-    gender: 'female',
-    image: '',
-    company: {
-      name: 'Tech Solutions',
-      title: 'Product Manager'
-    },
-    address: {
-      city: 'San Francisco'
-    }
+      id: 2,
+      firstName: 'Jane',
+      lastName: 'Smith',
+      username: 'janesmith',
+      email: 'jane.smith@company.com',
+      age: 28,
+      gender: 'female',
+      image: '',
+      company: {
+          name: 'Tech Solutions',
+          title: 'Product Manager',
+          department: ''
+      },
+      address: {
+          city: 'San Francisco',
+          address: '',
+          postalCode: '',
+          state: '',
+          country: ''
+      },
+      phone: '',
+      website: '',
+      birthDate: '',
+      bank: {
+          cardExpire: '',
+          cardNumber: '',
+          cardType: '',
+          currency: '',
+          iban: ''
+      }
   }
 ];
 
@@ -360,11 +390,26 @@ describe('UserTable Component', () => {
         gender: 'other',
         image: '',
         company: {
-          name: '',
-          title: ''
+            name: '',
+            title: '',
+            department: ''
         },
         address: {
-          city: ''
+            city: '',
+            address: '',
+            postalCode: '',
+            state: '',
+            country: ''
+        },
+        phone: '',
+        website: '',
+        birthDate: '',
+        bank: {
+            cardExpire: '',
+            cardNumber: '',
+            cardType: '',
+            currency: '',
+            iban: ''
         }
       };
       
@@ -379,8 +424,9 @@ describe('UserTable Component', () => {
         firstName: 'VeryLongFirstNameThatExceedsNormalLength',
         lastName: 'VeryLongLastNameThatExceedsNormalLength',
         company: {
-          name: 'Very Long Company Name That Exceeds Normal Length',
-          title: 'Very Long Job Title That Exceeds Normal Length'
+            name: 'Very Long Company Name That Exceeds Normal Length',
+            title: 'Very Long Job Title That Exceeds Normal Length',
+            department: ''
         }
       };
       

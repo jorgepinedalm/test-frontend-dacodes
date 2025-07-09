@@ -120,12 +120,11 @@ describe('AuthService', () => {
       } as Response);
 
       // Act
-      const result = await authService.getCurrentUser();
-
-      // Assert
+      const result = await authService.getCurrentUser();      // Assert
       expect(mockFetch).toHaveBeenCalledWith(
         'https://dummyjson.com/auth/me',
         {
+          method: 'GET',
           headers: {
             'Authorization': `Bearer ${mockToken}`,
           },
@@ -169,12 +168,10 @@ describe('AuthService', () => {
       (localStorage.getItem as jest.Mock).mockReturnValue('some-token');
 
       // Act
-      authService.logout();
-
-      // Assert
+      authService.logout();      // Assert
       expect(localStorage.removeItem).toHaveBeenCalledWith('auth_token');
       expect(localStorage.removeItem).toHaveBeenCalledWith('refresh_token');
-      expect(localStorage.removeItem).toHaveBeenCalledWith('user_data');
+      expect(localStorage.removeItem).toHaveBeenCalledWith('user');
     });
   });
 

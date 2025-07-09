@@ -54,7 +54,7 @@ describe('useDirectory', () => {
       limit: 20
     });
 
-    mockDirectoryService.sortUsers.mockImplementation((users, sortBy, sortOrder) => [...users]);
+    mockDirectoryService.sortUsers.mockImplementation((users: any, sortBy: any, sortOrder: any) => [...users]);
     mockDirectoryService.getCacheStats.mockReturnValue({ size: 0, keys: [] });
   });
 
