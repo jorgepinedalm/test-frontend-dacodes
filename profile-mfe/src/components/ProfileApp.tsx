@@ -72,10 +72,14 @@ const ProfileApp: React.FC<ProfileAppProps> = ({ userId: propUserId = 1, usernam
   
   // Check if we came from directory (has URL parameter)
   const isFromDirectory = !!urlUserId;
-
   const handleBackToDirectory = () => {
     navigate('/directory');
   };
+
+  // Scroll to top when component mounts or userId changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [effectiveUserId]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
