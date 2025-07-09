@@ -24,7 +24,7 @@ const Navigation: React.FC = () => {
       <div className="nav-container">
         <div className="nav-brand">
           <Link to="/dashboard" className="brand-link">
-            🏢 Modular People Portal
+            🏢 <span>Modular People Portal</span>
           </Link>
         </div>
         
@@ -33,25 +33,25 @@ const Navigation: React.FC = () => {
             to="/dashboard" 
             className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}
           >
-            📊 Dashboard
+            📊 <span>Dashboard</span>
           </Link>
           <Link 
             to="/directory" 
             className={`nav-link ${isActive('/directory') ? 'active' : ''}`}
           >
-            👥 Directory
+            👥 <span>Directory</span>
           </Link>
           <Link 
             to="/memory-game" 
             className={`nav-link ${isActive('/memory-game') ? 'active' : ''}`}
           >
-            🎮 Memory Game
+            🎮 <span>Memory Game</span>
           </Link>
           <Link 
             to="/profile" 
             className={`nav-link ${isActive('/profile') ? 'active' : ''}`}
           >
-            👤 Profile
+            👤 <span>Profile</span>
           </Link>
         </div>
 
