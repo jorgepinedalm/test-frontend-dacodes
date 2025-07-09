@@ -340,6 +340,9 @@
     border-color: rgba(255, 255, 255, 0.2);
     color: #f8f9fa;
   }
+    .form-control option {
+        color: #16213e;
+    }
 
   .form-control:focus {
     border-color: #667eea;

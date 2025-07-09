@@ -412,6 +412,10 @@
     color: #f8f9fa;
   }
 
+  .filter-select option {
+        color: #16213e;
+    }
+
   .filter-select:focus {
     background: rgba(255, 255, 255, 0.15);
   }
