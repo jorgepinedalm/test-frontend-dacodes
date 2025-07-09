@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { GameConfig, GameStatus } from '../types/game';
 import { DEFAULT_CONFIGS, formatTime, getDifficultyLevel } from '../utils/gameUtils';
 import './GameControls.css';
@@ -18,31 +19,186 @@ interface GameControlsProps {
   remainingTime: number | null;
 }
 
+// Modal Component outside main component to prevent re-creation
+interface ResultModalProps {
+  isVisible: boolean;
+  gameStatus: GameStatus;
+  difficultyLevel: string;
+  turns: number;
+  score: number;
+  onClose: () => void;
+  onShowSettings: () => void;
+  onStartGame: () => void;
+}
+
+const ResultModal: React.FC<ResultModalProps> = React.memo(({
+  isVisible,
+  gameStatus,
+  difficultyLevel,
+  turns,
+  score,
+  onClose,
+  onShowSettings,
+  onStartGame
+}) => {
+  // Early return to prevent unnecessary rendering
+  if (!isVisible) {
+    return null;
+  }
+  
+  if (gameStatus !== 'completed' && gameStatus !== 'failed') {
+    return null;
+  }
+
+  return createPortal(
+    <div className="modal-overlay" onClick={onClose}>
+      <div 
+        className="modal-content" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+        tabIndex={-1}
+      >
+        <button 
+          className="modal-close" 
+          onClick={onClose}
+          aria-label="Close modal"
+        >
+          ×
+        </button>
+        
+        <div className={`modal-header ${gameStatus === 'completed' ? 'success' : 'failure'}`}>
+          <h3 id="modal-title">
+            {gameStatus === 'completed' ? '🎉 Congratulations!' : '⏰ Time\'s Up!'}
+          </h3>
+        </div>
+        
+        <div className="modal-body" id="modal-description">
+          {gameStatus === 'completed' ? (
+            <>
+              <p>You completed the {difficultyLevel} level in {turns} turns!</p>
+              <div className="score-highlight">
+                Final Score: {score}
+              </div>
+              <p>Great job! Your memory skills are impressive!</p>
+            </>
+          ) : (
+            <>
+              <p>Better luck next time!</p>
+              <p>Try a larger time limit or smaller grid size.</p>
+            </>
+          )}
+        </div>
+        
+        <div className="modal-actions">
+          <button
+            className="btn btn-primary"
+            onClick={onShowSettings}
+          >
+            Game Settings
+          </button>
+          <button
+            className="btn btn-success"
+            onClick={onStartGame}
+          >
+            Play Again
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+});
+
 const GameControls: React.FC<GameControlsProps> = ({
   gameStatus,
   gameState,
   onStartNewGame,
   onResetGame,
   onPauseGame,
-  onResumeGame,
-  remainingTime
-}) => {
-  const [selectedConfig, setSelectedConfig] = React.useState<GameConfig>(DEFAULT_CONFIGS.medium);
+  onResumeGame,  remainingTime
+}) => {  const [selectedConfig, setSelectedConfig] = React.useState<GameConfig>(DEFAULT_CONFIGS.medium);
   const [showSettings, setShowSettings] = React.useState(false);
+  const [showResultModal, setShowResultModal] = React.useState(false);  // Show modal when game is completed or failed with small delay to prevent flickering
+  React.useEffect(() => {
+    if (gameStatus === 'completed' || gameStatus === 'failed') {
+      // Small delay to ensure smooth transition
+      const showTimeout = setTimeout(() => {
+        setShowResultModal(true);
+      }, 50);
+      
+      return () => clearTimeout(showTimeout);
+    } else {
+      setShowResultModal(false);
+    }
+  }, [gameStatus]);
+
+  // Handle ESC key to close modal and focus management
+  React.useEffect(() => {
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showResultModal) {
+        setShowResultModal(false);
+      }
+    };
+
+    if (showResultModal) {
+      document.addEventListener('keydown', handleEsc);
+      // Prevent body scroll when modal is open
+      document.body.style.overflow = 'hidden';
+      
+      // Focus the modal for screen readers with a small delay
+      const focusTimeout = setTimeout(() => {
+        const modal = document.querySelector('.modal-content');
+        if (modal) {
+          (modal as HTMLElement).focus();
+        }
+      }, 100);
+
+      return () => {
+        document.removeEventListener('keydown', handleEsc);
+        document.body.style.overflow = 'unset';
+        clearTimeout(focusTimeout);
+      };
+    } else {
+      // Cleanup when modal is closed
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [showResultModal]);
 
   const handleConfigChange = (key: keyof GameConfig, value: any) => {
     setSelectedConfig(prev => ({
       ...prev,
       [key]: value
     }));
-  };
-
-  const handleStartGame = () => {
+  };  const handleStartGame = React.useCallback(() => {
     onStartNewGame(selectedConfig);
     setShowSettings(false);
-  };
+    setShowResultModal(false);
+  }, [selectedConfig, onStartNewGame]);
+
+  const handleCloseModal = React.useCallback(() => {
+    setShowResultModal(false);
+  }, []);
 
   const difficultyLevel = getDifficultyLevel(gameState.config.gridSize);
+
+  // Memoized handlers to prevent unnecessary re-renders
+  const handleShowSettings = React.useCallback(() => {
+    setShowSettings(!showSettings);
+    setShowResultModal(false);
+  }, [showSettings]);
+
+  const handleStartGameFromModal = React.useCallback(() => {
+    onStartNewGame(selectedConfig);
+    setShowSettings(false);
+    setShowResultModal(false);
+  }, [selectedConfig, onStartNewGame]);
 
   return (
     <div className="game-controls">
@@ -209,23 +365,18 @@ const GameControls: React.FC<GameControlsProps> = ({
               ))}
             </div>
           </div>
-        </div>
-      )}
+        </div>      )}
 
-      {gameStatus === 'failed' && (
-        <div className="game-message failure">
-          <h3>Time's Up!</h3>
-          <p>Better luck next time! Try a larger time limit or smaller grid.</p>
-        </div>
-      )}
-
-      {gameStatus === 'completed' && (
-        <div className="game-message success">
-          <h3>Congratulations!</h3>
-          <p>You completed the {difficultyLevel} level in {gameState.turns} turns!</p>
-          <p>Final Score: <strong>{gameState.score}</strong></p>
-        </div>
-      )}
+      <ResultModal 
+        isVisible={showResultModal}
+        gameStatus={gameStatus}
+        difficultyLevel={difficultyLevel}
+        turns={gameState.turns}
+        score={gameState.score}
+        onClose={handleCloseModal}
+        onShowSettings={handleShowSettings}
+        onStartGame={handleStartGameFromModal}
+      />
     </div>
   );
 };
