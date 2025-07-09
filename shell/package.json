@@ -10,9 +10,9 @@
     "build:dev": "NODE_ENV=development webpack --mode development",
     "build:staging": "NODE_ENV=staging webpack --mode production --env staging",
     "build:prod": "NODE_ENV=production webpack --mode production",
-    "test": "jest --watchAll=false",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage --watchAll=false"
+    "test": "jest --watchAll=false --config=jest.config.json",
+    "test:watch": "jest --watch --config=jest.config.json",
+    "test:coverage": "jest --coverage --watchAll=false --config=jest.config.json"
   },
   "keywords": [],
   "author": "",

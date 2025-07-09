@@ -23,7 +23,7 @@
     }
   },
   "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup.ts"],
-  "moduleNameMapping": {
+  "moduleNameMapper": {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
     "^auth/(.*)$": "<rootDir>/src/__mocks__/auth/$1",
     "^directory/(.*)$": "<rootDir>/src/__mocks__/directory/$1",

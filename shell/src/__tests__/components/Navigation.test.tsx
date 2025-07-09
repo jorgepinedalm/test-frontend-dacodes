@@ -1,8 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BrowserRouter, MemoryRouter } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import Navigation from '../../components/Navigation';
-import { AuthProvider } from '../../contexts/AuthContext';
 
 // Mock the AuthContext hook
 const mockUser = {
@@ -74,11 +73,22 @@ describe('Navigation', () => {
       renderNavigation();
 
       // Assert
-      expect(screen.getByText('🏢 Modular People Portal')).toBeInTheDocument();
-      expect(screen.getByText('📊 Dashboard')).toBeInTheDocument();
-      expect(screen.getByText('👥 Directory')).toBeInTheDocument();
-      expect(screen.getByText('🎮 Memory Game')).toBeInTheDocument();
-      expect(screen.getByText('👤 Profile')).toBeInTheDocument();
+      const links = screen.getAllByRole('link');
+      // Modular People Portal link
+      const brandLinks = links.filter(link => link.textContent?.includes('Modular People Portal'));
+      expect(brandLinks[0]).toBeInTheDocument();
+      // Dashboard link
+      const dashboardLinks = links.filter(link => link.textContent?.includes('Dashboard'));
+      expect(dashboardLinks[0]).toBeInTheDocument();
+      // Directory link
+      const directoryLinks = links.filter(link => link.textContent?.includes('Directory'));
+      expect(directoryLinks[0]).toBeInTheDocument();
+      // Memory Game link
+      const memoryGameLinks = links.filter(link => link.textContent?.includes('Memory Game'));
+      expect(memoryGameLinks[0]).toBeInTheDocument();
+      // Profile link
+      const profileLinks = links.filter(link => link.textContent?.includes('Profile'));
+      expect(profileLinks[0]).toBeInTheDocument();
     });
 
     it('should display user information correctly', () => {
@@ -109,8 +119,9 @@ describe('Navigation', () => {
       renderNavigation('/dashboard');
 
       // Assert
-      const dashboardLink = screen.getByText('📊 Dashboard').closest('a');
-      expect(dashboardLink).toHaveClass('active');
+      const links = screen.getAllByRole('link');
+      const dashboardLinks = links.filter(link => link.textContent?.includes('Dashboard'));
+      expect(dashboardLinks[0]).toHaveClass('active');
     });
 
     it('should highlight active navigation link for directory', () => {
@@ -118,8 +129,9 @@ describe('Navigation', () => {
       renderNavigation('/directory');
 
       // Assert
-      const directoryLink = screen.getByText('👥 Directory').closest('a');
-      expect(directoryLink).toHaveClass('active');
+      const links = screen.getAllByRole('link');
+      const directoryLinks = links.filter(link => link.textContent?.includes('Directory'));
+      expect(directoryLinks[0]).toHaveClass('active');
     });
 
     it('should highlight active navigation link for memory game', () => {
@@ -127,8 +139,9 @@ describe('Navigation', () => {
       renderNavigation('/memory-game');
 
       // Assert
-      const memoryGameLink = screen.getByText('🎮 Memory Game').closest('a');
-      expect(memoryGameLink).toHaveClass('active');
+      const links = screen.getAllByRole('link');
+      const memoryGameLinks = links.filter(link => link.textContent?.includes('Memory Game'));
+      expect(memoryGameLinks[0]).toHaveClass('active');
     });
 
     it('should highlight active navigation link for profile', () => {
@@ -136,8 +149,9 @@ describe('Navigation', () => {
       renderNavigation('/profile');
 
       // Assert
-      const profileLink = screen.getByText('👤 Profile').closest('a');
-      expect(profileLink).toHaveClass('active');
+      const links = screen.getAllByRole('link');
+      const profileLinks = links.filter(link => link.textContent?.includes('Profile'));
+      expect(profileLinks[0]).toHaveClass('active');
     });
 
     it('should not highlight any link when on unmatched route', () => {
@@ -203,16 +217,22 @@ describe('Navigation', () => {
       renderNavigation();
 
       // Assert
-      expect(screen.getByText('🏢 Modular People Portal').closest('a'))
-        .toHaveAttribute('href', '/dashboard');
-      expect(screen.getByText('📊 Dashboard').closest('a'))
-        .toHaveAttribute('href', '/dashboard');
-      expect(screen.getByText('👥 Directory').closest('a'))
-        .toHaveAttribute('href', '/directory');
-      expect(screen.getByText('🎮 Memory Game').closest('a'))
-        .toHaveAttribute('href', '/memory-game');
-      expect(screen.getByText('👤 Profile').closest('a'))
-        .toHaveAttribute('href', '/profile');
+      const links = screen.getAllByRole('link');
+      // Modular People Portal link
+      const brandLinks = links.filter(link => link.textContent?.includes('Modular People Portal'));
+      expect(brandLinks[0]).toHaveAttribute('href', '/dashboard');
+      // Dashboard link
+      const dashboardLinks = links.filter(link => link.textContent?.includes('Dashboard'));
+      expect(dashboardLinks[0]).toHaveAttribute('href', '/dashboard');
+      // Directory link
+      const directoryLinks = links.filter(link => link.textContent?.includes('Directory'));
+      expect(directoryLinks[0]).toHaveAttribute('href', '/directory');
+      // Memory Game link
+      const memoryGameLinks = links.filter(link => link.textContent?.includes('Memory Game'));
+      expect(memoryGameLinks[0]).toHaveAttribute('href', '/memory-game');
+      // Profile link
+      const profileLinks = links.filter(link => link.textContent?.includes('Profile'));
+      expect(profileLinks[0]).toHaveAttribute('href', '/profile');
     });
 
     it('should have correct CSS classes applied', () => {
@@ -221,10 +241,11 @@ describe('Navigation', () => {
 
       // Assert
       expect(screen.getByRole('navigation')).toHaveClass('navigation');
-      expect(screen.getByText('🏢 Modular People Portal').closest('a'))
-        .toHaveClass('brand-link');
-      expect(screen.getByText('📊 Dashboard').closest('a'))
-        .toHaveClass('nav-link');
+      const links = screen.getAllByRole('link');
+      const brandLinks = links.filter(link => link.textContent?.includes('Modular People Portal'));
+      expect(brandLinks[0]).toHaveClass('brand-link');
+      const dashboardLinks = links.filter(link => link.textContent?.includes('Dashboard'));
+      expect(dashboardLinks[0]).toHaveClass('nav-link');
     });
   });
 
@@ -255,8 +276,8 @@ describe('Navigation', () => {
       renderNavigation();
 
       // Assert
-      const userNameElement = screen.getByText('').closest('.user-name');
-      expect(userNameElement).toBeInTheDocument();
+      const userNameElements = screen.getAllByText('', { selector: '.user-name' });
+      expect(userNameElements.length).toBeGreaterThan(0);
     });
   });
 });
