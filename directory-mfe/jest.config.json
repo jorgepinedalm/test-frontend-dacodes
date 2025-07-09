@@ -12,7 +12,8 @@
   "collectCoverageFrom": [
     "src/**/*.{ts,tsx}",
     "!src/**/*.d.ts",
-    "!src/index.tsx"
+    "!src/index.tsx",
+    "!src/bootstrap.tsx"
   ],
   "coverageReporters": ["lcov", "text", "clover"],
   "coverageThreshold": {
@@ -22,7 +23,7 @@
       "lines": 80,
       "statements": 80
     }
-  },  "setupFilesAfterEnv": ["<rootDir>/src/__tests__/setup.ts"],
+  },  "setupFilesAfterEnv": ["<rootDir>/src/test-utils/setup.ts"],
   "moduleNameMapper": {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy"
   }

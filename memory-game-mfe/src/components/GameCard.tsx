@@ -18,7 +18,10 @@ const GameCard: React.FC<GameCardProps> = ({ card, onFlip, disabled }) => {
   // Empty cards (for odd grids) should be invisible/disabled
   if (card.value === '') {
     return (
-      <div className="game-card empty matched">
+      <div 
+        className="game-card empty matched"
+        data-testid={`game-card-${card.id}`}
+      >
         <div className="card-inner">
           <div className="card-front"></div>
           <div className="card-back"></div>
@@ -33,6 +36,15 @@ const GameCard: React.FC<GameCardProps> = ({ card, onFlip, disabled }) => {
         card.isMatched ? 'matched' : ''
       } ${disabled ? 'disabled' : ''}`}
       onClick={handleClick}
+      data-testid={`game-card-${card.id}`}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
     >
       <div className="card-inner">
         <div className="card-front">
