@@ -1,11 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
 import ProfileApp from './components/ProfileApp';
 
 // This function is called by the shell application
 export const mount = (element: HTMLElement, props: any = {}) => {
   const root = ReactDOM.createRoot(element);
-  root.render(<ProfileApp {...props} />);
+  root.render(
+    <Router>
+      <ProfileApp {...props} />
+    </Router>
+  );
   
   return () => {
     root.unmount();

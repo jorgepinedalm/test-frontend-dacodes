@@ -5,7 +5,11 @@ import './DirectoryApp.css';
 import UserTable from './components/UserTable';
 import Pagination from './components/Pagination';
 
-const DirectoryApp: React.FC = () => {
+interface DirectoryAppProps {
+  onViewProfile?: (userId: number) => void;
+}
+
+const DirectoryApp: React.FC<DirectoryAppProps> = ({ onViewProfile }) => {
   const {
     users,
     loading,
@@ -66,9 +70,7 @@ const DirectoryApp: React.FC = () => {
           <span>{error}</span>
           <button onClick={clearError} className="error-close">×</button>
         </div>
-      )}
-
-      <UserTable
+      )}      <UserTable
         users={users}
         loading={loading}
         onSort={sort}
@@ -76,7 +78,8 @@ const DirectoryApp: React.FC = () => {
           column: filters.sortBy,
           direction: filters.sortOrder
         }}
-      />      <Pagination
+        onViewProfile={onViewProfile}
+      /><Pagination
         currentPage={pagination.currentPage}
         totalPages={pagination.totalPages}
         totalItems={pagination.totalItems}

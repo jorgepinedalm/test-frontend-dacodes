@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Navigation from './components/Navigation';
 import MicroFrontendLoader from './components/MicroFrontendLoader';
@@ -26,6 +26,12 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 // Main App Component
 const AppContent: React.FC = () => {
   const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
+  // Handler for viewing a specific user profile from directory
+  const handleViewProfile = (userId: number) => {
+    navigate(`/profile/${userId}`);
+  };
 
   return (
     <div className="app">
@@ -61,7 +67,7 @@ const AppContent: React.FC = () => {
             element={
               <ProtectedRoute>
                 <MicroFrontendLoader>
-                  <DirectoryApp />
+                  <DirectoryApp {...({ onViewProfile: handleViewProfile } as any)} />
                 </MicroFrontendLoader>
               </ProtectedRoute>
             } 
@@ -82,7 +88,7 @@ const AppContent: React.FC = () => {
           />
           
           <Route 
-            path="/profile/*" 
+            path="/profile" 
             element={
               <ProtectedRoute>
                 <MicroFrontendLoader>
@@ -90,6 +96,17 @@ const AppContent: React.FC = () => {
                     userId={user?.id} 
                     username={user?.username} 
                   />
+                </MicroFrontendLoader>
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/profile/:userId" 
+            element={
+              <ProtectedRoute>
+                <MicroFrontendLoader>
+                  <ProfileApp />
                 </MicroFrontendLoader>
               </ProtectedRoute>
             } 

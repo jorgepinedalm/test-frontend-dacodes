@@ -11,14 +11,16 @@ interface UserTableProps {
     column: keyof User | 'company.name' | 'address.city';
     direction: 'asc' | 'desc';
   };
+  onViewProfile?: (userId: number) => void;
 }
 
 const UserTable: React.FC<UserTableProps> = ({
   users,
   loading,
   onSort,
-  currentSort
-}) => {  const handleSort = (column: keyof User | 'company.name' | 'address.city') => {
+  currentSort,
+  onViewProfile
+}) => {const handleSort = (column: keyof User | 'company.name' | 'address.city') => {
     const direction = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
     onSort(column, direction);
   };
@@ -75,13 +77,13 @@ const UserTable: React.FC<UserTableProps> = ({
                 className="sortable"
               >
                 Age {getSortIcon('age')}
-              </th>
-              <th 
+              </th>              <th 
                 onClick={() => handleSort('address.city')}
                 className="sortable"
               >
                 City {getSortIcon('address.city')}
               </th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -125,9 +127,19 @@ const UserTable: React.FC<UserTableProps> = ({
                       <span className="company-name">{user.company.name}</span>
                       <span className="company-title">{user.company.title}</span>
                     </div>
-                  </td>
-                  <td className="age-cell">{user.age}</td>
+                  </td>                  <td className="age-cell">{user.age}</td>
                   <td className="city-cell">{user.address.city}</td>
+                  <td className="actions-cell">
+                    {onViewProfile && (
+                      <button 
+                        className="btn-view-profile"
+                        onClick={() => onViewProfile(user.id)}
+                        title="View Profile"
+                      >
+                        👤 View Profile
+                      </button>
+                    )}
+                  </td>
                 </tr>
               );
             })}

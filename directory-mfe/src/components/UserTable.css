@@ -258,6 +258,37 @@
   line-height: 1.5;
 }
 
+/* Actions cell styles */
+.actions-cell {
+  padding: 8px 12px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-view-profile {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-view-profile:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-view-profile:active {
+  transform: translateY(0);
+}
+
 /* Mobile responsive */
 @media (max-width: 768px) {
   .user-table {
@@ -430,5 +461,24 @@
 
   .spinner {
     animation: none;
+  }
+}
+
+/* Responsive adjustments for actions column */
+@media (max-width: 1024px) {
+  .actions-cell {
+    padding: 6px 8px;
+  }
+  
+  .btn-view-profile {
+    padding: 4px 8px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-view-profile {
+    padding: 4px 6px;
+    font-size: 0.65rem;
   }
 }

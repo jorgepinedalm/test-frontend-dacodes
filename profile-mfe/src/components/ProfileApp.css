@@ -12,7 +12,10 @@
 }
 
 .profile-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
   margin-bottom: 30px;
   padding: 40px 20px;
   background: white;
@@ -20,7 +23,16 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-.profile-header h1 {
+.profile-header.centered {
+  justify-content: center;
+  text-align: center;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.header-content h1 {
   color: #333;
   font-size: 2.5rem;
   font-weight: 700;
@@ -31,11 +43,36 @@
   background-clip: text;
 }
 
-.profile-header p {
+.header-content p {
   color: #6c757d;
   font-size: 1.125rem;
   margin: 0;
   line-height: 1.6;
+}
+
+.btn-back-to-directory {
+  padding: 12px 24px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  background: white;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-back-to-directory:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .loading-container,
@@ -453,5 +490,28 @@
 
   .spinner {
     animation: none;
+  }
+
+  .btn-back-to-directory:hover {
+    transform: none;
+  }
+}
+
+/* Responsive styles for back button */
+@media (max-width: 768px) {
+  .profile-header {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .header-content {
+    text-align: center;
+  }
+
+  .btn-back-to-directory {
+    align-self: flex-start;
+    font-size: 0.8rem;
+    padding: 10px 20px;
   }
 }

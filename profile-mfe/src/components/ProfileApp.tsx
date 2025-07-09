@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import './ProfileApp.css';
 
 interface User {
@@ -59,10 +60,22 @@ interface ProfileAppProps {
   username?: string;
 }
 
-const ProfileApp: React.FC<ProfileAppProps> = ({ userId = 1, username }) => {
+const ProfileApp: React.FC<ProfileAppProps> = ({ userId: propUserId = 1, username }) => {
+  const { userId: urlUserId } = useParams<{ userId: string }>();
+  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Use URL parameter if available, otherwise use prop
+  const effectiveUserId = urlUserId ? parseInt(urlUserId, 10) : propUserId;
+  
+  // Check if we came from directory (has URL parameter)
+  const isFromDirectory = !!urlUserId;
+
+  const handleBackToDirectory = () => {
+    navigate('/directory');
+  };
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -70,7 +83,7 @@ const ProfileApp: React.FC<ProfileAppProps> = ({ userId = 1, username }) => {
       setError(null);
       
       try {
-        const response = await fetch(`https://dummyjson.com/users/${userId}`);
+        const response = await fetch(`https://dummyjson.com/users/${effectiveUserId}`);
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -87,7 +100,7 @@ const ProfileApp: React.FC<ProfileAppProps> = ({ userId = 1, username }) => {
     };
 
     fetchUserProfile();
-  }, [userId]);
+  }, [effectiveUserId]);
 
   if (loading) {
     return (
@@ -111,12 +124,22 @@ const ProfileApp: React.FC<ProfileAppProps> = ({ userId = 1, username }) => {
         </div>
       </div>
     );
-  }
-  return (
+  }  return (
     <div className="profile-app">
-      <div className="profile-header">
-        <h1>👤 Profile Information</h1>
-        <p>View detailed profile information</p>
+      <div className={`profile-header ${!isFromDirectory ? 'centered' : ''}`}>
+        <div className="header-content">
+          <h1>👤 Profile Information</h1>
+          <p>View detailed profile information</p>
+        </div>
+        {isFromDirectory && (
+          <button 
+            className="btn-back-to-directory"
+            onClick={handleBackToDirectory}
+            title="Back to Directory"
+          >
+            ← Back to Directory
+          </button>
+        )}
       </div>
 
       <div className="profile-container">
