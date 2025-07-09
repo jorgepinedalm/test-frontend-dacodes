@@ -4,49 +4,35 @@ import AuthService from '../../services/authService';
 import { LoginCredentials, LoginResponse, User } from '../../types/auth';
 import { act } from 'react';
 
-// Required fix for useAuth.test.ts
-jest.mock('../../services/authService', () => {
-  return {
-    __esModule: true,
-    default: {
-      getInstance: jest.fn()
-    }
-  };
-});
+// --- MOCK AuthService ---
+const mockAuthServiceInstance = {
+  getToken: jest.fn(),
+  isValidToken: jest.fn(),
+  getCurrentUser: jest.fn(),
+  login: jest.fn(),
+  logout: jest.fn(),
+  refreshToken: jest.fn(),
+  isAuthenticated: jest.fn(),
+  setToken: jest.fn(),
+  setRefreshToken: jest.fn(),
+  setUser: jest.fn(),
+};
 
-// Mock AuthService
-const MockedAuthService = AuthService as jest.MockedClass<typeof AuthService>;
+function MockAuthService() { return mockAuthServiceInstance; }
+MockAuthService.getInstance = () => mockAuthServiceInstance;
+
+jest.mock('../../services/authService', () => ({
+  __esModule: true,
+  default: MockAuthService
+}));
 
 describe('useAuth', () => {
-  let mockAuthService: jest.Mocked<AuthService>;
-  
   beforeEach(() => {
     jest.clearAllMocks();
-    
-    // Create mock instance
-    mockAuthService = {
-      getToken: jest.fn(),
-      isValidToken: jest.fn(),
-      getCurrentUser: jest.fn(),
-      login: jest.fn(),
-      logout: jest.fn(),
-      refreshToken: jest.fn(),
-      isAuthenticated: jest.fn(),
-      setToken: jest.fn(),
-      setRefreshToken: jest.fn(),
-      setUser: jest.fn(),
-    } as any;
-
-    // Mock the getInstance method to return our mock
-    MockedAuthService.getInstance = jest.fn(() => mockAuthService);
-
-    // Set default mock behaviors for initialization
-    mockAuthService.getToken.mockReturnValue(null);
-    mockAuthService.isValidToken.mockReturnValue(false);
-    mockAuthService.getCurrentUser.mockResolvedValue(null);
-
-    // Mock the getInstance method to return our mock
-    (AuthService.getInstance as jest.Mock).mockReturnValue(mockAuthService);
+    Object.values(mockAuthServiceInstance).forEach(fn => typeof fn === 'function' && fn.mockReset && fn.mockReset());
+    mockAuthServiceInstance.getToken.mockReturnValue(null);
+    mockAuthServiceInstance.isValidToken.mockReturnValue(false);
+    mockAuthServiceInstance.getCurrentUser.mockResolvedValue(null);
   });
   describe('initialization', () => {
     it('should initialize with loading state', async () => {
@@ -80,9 +66,9 @@ describe('useAuth', () => {
         image: "/dummy/image.jpg"
       };
 
-      mockAuthService.getToken.mockReturnValue(mockToken);
-      mockAuthService.isValidToken.mockReturnValue(true);
-      mockAuthService.getCurrentUser.mockResolvedValue(mockUser);
+      mockAuthServiceInstance.getToken.mockReturnValue(mockToken);
+      mockAuthServiceInstance.isValidToken.mockReturnValue(true);
+      mockAuthServiceInstance.getCurrentUser.mockResolvedValue(mockUser);
 
       // Act
       const { result } = renderHook(() => useAuth());
@@ -100,7 +86,7 @@ describe('useAuth', () => {
 
     it('should initialize unauthenticated state when no token exists', async () => {
       // Arrange
-      mockAuthService.getToken.mockReturnValue(null);
+      mockAuthServiceInstance.getToken.mockReturnValue(null);
 
       // Act
       const { result } = renderHook(() => useAuth());
@@ -118,9 +104,9 @@ describe('useAuth', () => {
 
     it('should handle initialization error gracefully', async () => {
       // Arrange
-      mockAuthService.getToken.mockReturnValue('invalid-token');
-      mockAuthService.isValidToken.mockReturnValue(true);
-      mockAuthService.getCurrentUser.mockRejectedValue(new Error('Network error'));
+      mockAuthServiceInstance.getToken.mockReturnValue('invalid-token');
+      mockAuthServiceInstance.isValidToken.mockReturnValue(true);
+      mockAuthServiceInstance.getCurrentUser.mockRejectedValue(new Error('Network error'));
 
       // Act
       const { result } = renderHook(() => useAuth());
@@ -156,8 +142,8 @@ describe('useAuth', () => {
         image: "/dummy/image.jpg"
       };
 
-      mockAuthService.getToken.mockReturnValue(null);
-      mockAuthService.login.mockResolvedValue(mockLoginResponse);
+      mockAuthServiceInstance.getToken.mockReturnValue(null);
+      mockAuthServiceInstance.login.mockResolvedValue(mockLoginResponse);
 
       // Act
       const { result } = renderHook(() => useAuth());
@@ -173,7 +159,7 @@ describe('useAuth', () => {
 
       // Assert
       expect(loginResult).toBe(true);
-      expect(mockAuthService.login).toHaveBeenCalledWith(credentials);
+      expect(mockAuthServiceInstance.login).toHaveBeenCalledWith(credentials);
       expect(result.current.authState.isAuthenticated).toBe(true);
       expect(result.current.authState.user).toEqual(mockLoginResponse);
       expect(result.current.authState.token).toBe(mockLoginResponse.accessToken);
@@ -188,8 +174,8 @@ describe('useAuth', () => {
         password: 'invalid'
       };
 
-      mockAuthService.getToken.mockReturnValue(null);
-      mockAuthService.login.mockRejectedValue(new Error('Invalid credentials'));
+      mockAuthServiceInstance.getToken.mockReturnValue(null);
+      mockAuthServiceInstance.login.mockRejectedValue(new Error('Invalid credentials'));
 
       // Act
       const { result } = renderHook(() => useAuth());
@@ -219,12 +205,12 @@ describe('useAuth', () => {
         password: 'testpass'
       };
 
-      mockAuthService.getToken.mockReturnValue(null);
+      mockAuthServiceInstance.getToken.mockReturnValue(null);
       let resolveLogin: (value: any) => void;
       const loginPromise = new Promise(resolve => {
         resolveLogin = resolve;
       }) as Promise<LoginResponse>;
-      mockAuthService.login.mockReturnValue(loginPromise);
+      mockAuthServiceInstance.login.mockReturnValue(loginPromise);
 
       // Act
       const { result } = renderHook(() => useAuth());
@@ -267,7 +253,7 @@ describe('useAuth', () => {
       });
 
       // Assert
-      expect(mockAuthService.logout).toHaveBeenCalled();
+      expect(mockAuthServiceInstance.logout).toHaveBeenCalled();
       expect(result.current.authState.isAuthenticated).toBe(false);
       expect(result.current.authState.user).toBeNull();
       expect(result.current.authState.token).toBeNull();
@@ -280,7 +266,7 @@ describe('useAuth', () => {
     it('should successfully refresh token', async () => {
       // Arrange
       const newToken = 'new-access-token';
-      mockAuthService.refreshToken.mockResolvedValue(newToken);
+      mockAuthServiceInstance.refreshToken.mockResolvedValue(newToken);
 
       const { result } = renderHook(() => useAuth());
 
@@ -292,13 +278,13 @@ describe('useAuth', () => {
 
       // Assert
       expect(refreshResult).toBe(true);
-      expect(mockAuthService.refreshToken).toHaveBeenCalled();
+      expect(mockAuthServiceInstance.refreshToken).toHaveBeenCalled();
       expect(result.current.authState.token).toBe(newToken);
     });
 
     it('should logout user when refresh fails', async () => {
       // Arrange
-      mockAuthService.refreshToken.mockResolvedValue(null);
+      mockAuthServiceInstance.refreshToken.mockResolvedValue(null);
 
       const { result } = renderHook(() => useAuth());
 
@@ -310,7 +296,7 @@ describe('useAuth', () => {
 
       // Assert
       expect(refreshResult).toBe(false);
-      expect(mockAuthService.logout).toHaveBeenCalled();
+      expect(mockAuthServiceInstance.logout).toHaveBeenCalled();
       expect(result.current.authState.isAuthenticated).toBe(false);
     });
   });

@@ -30,5 +30,9 @@
     "^memoryGame/(.*)$": "<rootDir>/src/__mocks__/memoryGame/$1",
     "^profile/(.*)$": "<rootDir>/src/__mocks__/profile/$1"
   },
-  "testTimeout": 10000
+  "testTimeout": 10000,
+  "testPathIgnorePatterns": [
+    "/node_modules/",
+    "setup.ts"
+  ]
 }

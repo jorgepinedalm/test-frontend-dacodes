@@ -24,7 +24,7 @@
     "build:directory": "cd directory-mfe && npm run build",
     "build:game": "cd memory-game-mfe && npm run build",
     "build:profile": "cd profile-mfe && npm run build",
-    "test:all": "npm run test:shell && npm run test:auth && npm run test:directory && npm run test:game && npm run test:profile",
+    "test:all": "concurrently \"npm run test:shell\" \"npm run test:auth\" \"npm run test:directory\" \"npm run test:game\" \"npm run test:profile\"",
     "test:shell": "cd shell && npm test",
     "test:auth": "cd auth-mfe && npm test",
     "test:directory": "cd directory-mfe && npm test",
