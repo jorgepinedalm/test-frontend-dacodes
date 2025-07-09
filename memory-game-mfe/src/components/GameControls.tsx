@@ -2,6 +2,7 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { GameConfig, GameStatus } from '../types/game';
 import { DEFAULT_CONFIGS, formatTime, getDifficultyLevel } from '../utils/gameUtils';
+import { useGameSettingsContext } from '../contexts/GameSettingsContext';
 import './GameControls.css';
 
 interface GameControlsProps {
@@ -131,9 +132,16 @@ const GameControls: React.FC<GameControlsProps> = ({
   onResumeGame,
   onViewLeaderboard,
   remainingTime
-}) => {const [selectedConfig, setSelectedConfig] = React.useState<GameConfig>(DEFAULT_CONFIGS.medium);
+}) => {
+  const { gameSettings, updateGameSettings, saveGameSettings } = useGameSettingsContext();
+  const [selectedConfig, setSelectedConfig] = React.useState<GameConfig>(gameSettings);
   const [showSettings, setShowSettings] = React.useState(false);
-  const [showResultModal, setShowResultModal] = React.useState(false);  // Show modal when game is completed or failed with small delay to prevent flickering
+  const [showResultModal, setShowResultModal] = React.useState(false);
+
+  // Sync selectedConfig with persisted settings when they change
+  React.useEffect(() => {
+    setSelectedConfig(gameSettings);
+  }, [gameSettings]);// Show modal when game is completed or failed with small delay to prevent flickering
   React.useEffect(() => {
     if (gameStatus === 'completed' || gameStatus === 'failed') {
       // Small delay to ensure smooth transition
@@ -182,17 +190,21 @@ const GameControls: React.FC<GameControlsProps> = ({
       document.removeEventListener('keydown', handleEsc);
     };
   }, [showResultModal]);
-
   const handleConfigChange = (key: keyof GameConfig, value: any) => {
-    setSelectedConfig(prev => ({
-      ...prev,
+    const newConfig = {
+      ...selectedConfig,
       [key]: value
-    }));
+    };
+    setSelectedConfig(newConfig);
+    // Persist the changes immediately
+    updateGameSettings({ [key]: value });
   };  const handleStartGame = React.useCallback(() => {
+    // Save current config before starting game
+    saveGameSettings(selectedConfig);
     onStartNewGame(selectedConfig);
     setShowSettings(false);
     setShowResultModal(false);
-  }, [selectedConfig, onStartNewGame]);
+  }, [selectedConfig, onStartNewGame, saveGameSettings]);
 
   const handleCloseModal = React.useCallback(() => {
     setShowResultModal(false);
@@ -204,19 +216,24 @@ const GameControls: React.FC<GameControlsProps> = ({
     setShowSettings(!showSettings);
     setShowResultModal(false);
   }, [showSettings]);
-
   const handleStartGameFromModal = React.useCallback(() => {
+    // Save current config before starting game
+    saveGameSettings(selectedConfig);
     onStartNewGame(selectedConfig);
     setShowSettings(false);
     setShowResultModal(false);
-  }, [selectedConfig, onStartNewGame]);
-
+  }, [selectedConfig, onStartNewGame, saveGameSettings]);
   const handleViewLeaderboard = React.useCallback(() => {
     setShowResultModal(false);
     if (onViewLeaderboard) {
       onViewLeaderboard();
     }
   }, [onViewLeaderboard]);
+
+  const handlePresetSelect = React.useCallback((config: GameConfig) => {
+    setSelectedConfig(config);
+    saveGameSettings(config);
+  }, [saveGameSettings]);
 
   return (
     <div className="game-controls">
@@ -369,14 +386,13 @@ const GameControls: React.FC<GameControlsProps> = ({
 
           <div className="preset-buttons">
             <h4>Quick Presets:</h4>
-            <div className="preset-grid">
-              {Object.entries(DEFAULT_CONFIGS).map(([name, config]) => (
+            <div className="preset-grid">              {Object.entries(DEFAULT_CONFIGS).map(([name, config]) => (
                 <button
                   key={name}
                   className={`btn btn-outline ${
                     JSON.stringify(selectedConfig) === JSON.stringify(config) ? 'active' : ''
                   }`}
-                  onClick={() => setSelectedConfig(config)}
+                  onClick={() => handlePresetSelect(config)}
                 >
                   {name.charAt(0).toUpperCase() + name.slice(1)}
                 </button>

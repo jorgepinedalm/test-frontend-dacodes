@@ -1,27 +1,41 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { GameState, GameConfig, Card, GameStatus } from '../types/game';
 import { generateCards, cardsMatch, calculateScore } from '../utils/gameUtils';
+import { useGameSettingsContext } from '../contexts/GameSettingsContext';
 import GameService from '../services/gameService';
 
 const gameService = GameService.getInstance();
 
-const initialGameState: GameState = {
-  cards: [],
-  flippedCards: [],
-  matchedPairs: 0,
-  totalPairs: 0,
-  turns: 0,
-  isGameActive: false,
-  isGameComplete: false,
-  elapsedTime: 0,
-  config: { gridSize: 4, hasTimer: false }
-};
-
 export const useMemoryGame = (userId?: number, username?: string) => {
-  const [gameState, setGameState] = useState<GameState>(initialGameState);
+  const { gameSettings } = useGameSettingsContext();
+  
+  // Create initial state with persisted configuration
+  const getInitialGameState = (): GameState => ({
+    cards: [],
+    flippedCards: [],
+    matchedPairs: 0,
+    totalPairs: 0,
+    turns: 0,
+    isGameActive: false,
+    isGameComplete: false,
+    elapsedTime: 0,
+    config: gameSettings
+  });
+  
+  const [gameState, setGameState] = useState<GameState>(getInitialGameState());
   const [gameStatus, setGameStatus] = useState<GameStatus>('idle');
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const startTimeRef = useRef<number | null>(null);
+
+  // Sync game state config with persisted settings when not playing
+  useEffect(() => {
+    if (gameStatus === 'idle' || gameStatus === 'paused') {
+      setGameState(prev => ({
+        ...prev,
+        config: gameSettings
+      }));
+    }
+  }, [gameSettings, gameStatus]);
 
   // Timer effect
   useEffect(() => {
@@ -195,7 +209,7 @@ export const useMemoryGame = (userId?: number, username?: string) => {
       timerRef.current = null;
     }
 
-    setGameState(initialGameState);
+    setGameState(getInitialGameState());
     setGameStatus('idle');
     startTimeRef.current = null;
   }, []);

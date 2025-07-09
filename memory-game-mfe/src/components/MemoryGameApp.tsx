@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useMemoryGame } from '../hooks/useMemoryGame';
+import { GameSettingsProvider } from '../contexts/GameSettingsContext';
 import GameControls from './GameControls';
 import GameGrid from './GameGrid';
 import Leaderboard from './Leaderboard';
@@ -11,6 +12,14 @@ interface MemoryGameAppProps {
 }
 
 const MemoryGameApp: React.FC<MemoryGameAppProps> = ({ userId, username }) => {
+  return (
+    <GameSettingsProvider>
+      <MemoryGameContent userId={userId} username={username} />
+    </GameSettingsProvider>
+  );
+};
+
+const MemoryGameContent: React.FC<MemoryGameAppProps> = ({ userId, username }) => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [leaderboardRefresh, setLeaderboardRefresh] = useState(0);
 
