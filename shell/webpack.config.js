@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { ModuleFederationPlugin } = require('webpack').container;
+const { getMFEConfig } = require('./config/mfe-config');
 
 module.exports = {
   mode: 'development',
@@ -32,12 +33,8 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'shell',
-      remotes: {
-        auth: 'auth@http://localhost:3001/remoteEntry.js',
-        directory: 'directory@http://localhost:3002/remoteEntry.js',
-        memoryGame: 'memoryGame@http://localhost:3003/remoteEntry.js',
-        profile: 'profile@http://localhost:3004/remoteEntry.js'
-      },      shared: {
+      remotes: getMFEConfig(),
+      shared: {
         react: { 
           singleton: true, 
           eager: true,
